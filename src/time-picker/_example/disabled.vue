@@ -1,0 +1,27 @@
+<template>
+  <t-space direction="vertical">
+    <h3>禁用整个选择器</h3>
+    <t-time-picker v-model="time1" :disabled="true" />
+    <h3>禁用指定时间</h3>
+    <t-time-picker :disable-time="disableTime" />
+  </t-space>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const time1 = ref('11:12:10');
+
+const disableTime = (h: number) => {
+  const disableHour = [1, 2, 3];
+  if (h > 4) {
+    return {
+      hour: disableHour,
+      minute: [30, 31, 32, 33, 34],
+    };
+  }
+  return {
+    hour: disableHour,
+  };
+};
+</script>

@@ -1,0 +1,329 @@
+import { computed, defineComponent, toRefs, PropType } from 'vue';
+import {
+  BrowseIcon as TdBrowseIcon,
+  DeleteIcon as TdDeleteIcon,
+  CheckCircleFilledIcon as TdCheckCircleFilledIcon,
+  ErrorCircleFilledIcon as TdErrorCircleFilledIcon,
+  TimeFilledIcon as TdTimeFilledIcon,
+} from 'tdesign-icons-vue-next';
+import useGlobalIcon from '../../hooks/useGlobalIcon';
+import ImageViewer from '../../image-viewer';
+import { CommonDisplayFileProps } from '../interface';
+import { commonProps } from '../constants';
+import TButton from '../../button';
+import { UploadFile, TdUploadProps } from '../type';
+import useDrag, { UploadDragEvents } from '../hooks/useDrag';
+import { abridgeName, returnFileSize } from '../../_common/js/upload/utils';
+import TLoading from '../../loading';
+import { useTNodeJSX } from '../../hooks';
+import Link from '../../link';
+import { UploadConfig } from '../../config-provider';
+
+export interface ImageFlowListProps extends CommonDisplayFileProps {
+  uploadFiles?: (toFiles?: UploadFile[]) => void;
+  cancelUpload?: (context: { e: MouseEvent; file?: UploadFile }) => void;
+  dragEvents: UploadDragEvents;
+  disabled?: boolean;
+  isBatchUpload?: boolean;
+  draggable?: boolean;
+  onPreview?: TdUploadProps['onPreview'];
+}
+
+export default defineComponent({
+  name: 'UploadMultipleFlowList',
+
+  props: {
+    ...commonProps,
+    uploadFiles: Function as PropType<ImageFlowListProps['uploadFiles']>,
+    cancelUpload: Function as PropType<ImageFlowListProps['cancelUpload']>,
+    dragEvents: Object as PropType<ImageFlowListProps['dragEvents']>,
+    disabled: Boolean,
+    isBatchUpload: Boolean,
+    draggable: Boolean,
+    onPreview: Function as PropType<ImageFlowListProps['onPreview']>,
+  },
+
+  setup(props, { slots }) {
+    // locale 已经在 useUpload 中统一处理优先级
+    const { uploading, disabled, displayFiles, classPrefix } = toRefs(props);
+    const uploadPrefix = computed(() => `${classPrefix.value}-upload`);
+
+    const locale = computed(() => props.locale as UploadConfig);
+
+    const renderTNodeJSX = useTNodeJSX();
+
+    const { BrowseIcon, DeleteIcon, CheckCircleFilledIcon, ErrorCircleFilledIcon, TimeFilledIcon } = useGlobalIcon({
+      BrowseIcon: TdBrowseIcon,
+      DeleteIcon: TdDeleteIcon,
+      CheckCircleFilledIcon: TdCheckCircleFilledIcon,
+      ErrorCircleFilledIcon: TdErrorCircleFilledIcon,
+      TimeFilledIcon: TdTimeFilledIcon,
+    });
+
+    const drag = useDrag(props.dragEvents);
+
+    const uploadText = computed(() => {
+      if (uploading.value) return `${locale.value.progress.uploadingText}`;
+      return locale.value.triggerUploadText.normal;
+    });
+
+    const innerDragEvents = computed(() => {
+      const draggable = props.draggable === undefined ? true : props.draggable;
+      return draggable
+        ? {
+            onDrop: drag.handleDrop,
+            onDragenter: drag.handleDragenter,
+            onDragover: drag.handleDragover,
+            onDragleave: drag.handleDragleave,
+          }
+        : {};
+    });
+
+    const getStatusMap = () => {
+      const iconMap = {
+        success: <CheckCircleFilledIcon />,
+        fail: <ErrorCircleFilledIcon />,
+        progress: <TLoading />,
+        waiting: <TimeFilledIcon />,
+      };
+      const { progress } = locale.value;
+      const textMap = {
+        success: progress?.successText,
+        fail: progress?.failText,
+        progress: progress?.uploadingText,
+        waiting: progress?.waitingText,
+      };
+      return {
+        iconMap,
+        textMap,
+      };
+    };
+
+    const renderEmpty = () => (
+      <div class={`${uploadPrefix.value}__flow-empty`}>
+        {drag.dragActive.value ? locale.value.dragger.dragDropText : locale.value.dragger.clickAndDragText}
+      </div>
+    );
+
+    const renderImgItem = (file: UploadFile, index: number) => {
+      const { iconMap, textMap } = getStatusMap();
+      const fileName = props.abridgeName && file.name ? abridgeName(file.name, ...props.abridgeName) : file.name;
+      return (
+        <li class={`${uploadPrefix.value}__card-item`} key={file.name + index + file.percent + file.status || '0'}>
+          <div
+            class={[
+              `${uploadPrefix.value}__card-content`,
+              { [`${classPrefix.value}-is-bordered`]: file.status !== 'waiting' },
+            ]}
+          >
+            {['fail', 'progress'].includes(file.status) && (
+              <div
+                class={`${uploadPrefix.value}__card-status-wrap ${uploadPrefix.value}__${props.theme}-${file.status}`}
+              >
+                {iconMap[file.status as 'fail' | 'progress']}
+                <p>
+                  {textMap[file.status as 'fail' | 'progress']}
+                  {file.status === 'progress' ? ` ${file.percent}%` : ''}
+                </p>
+              </div>
+            )}
+            {(['waiting', 'success'].includes(file.status) || (!file.status && file.url)) && (
+              <img
+                class={`${uploadPrefix.value}__card-image`}
+                src={file.url || '//tdesign.gtimg.com/tdesign-default-img.png'}
+              />
+            )}
+            <div class={`${uploadPrefix.value}__card-mask`}>
+              {file.url && (
+                <span class={`${uploadPrefix.value}__card-mask-item`}>
+                  <ImageViewer
+                    images={displayFiles.value.map((t) => t.url)}
+                    defaultIndex={index}
+                    trigger={(h, { open }) => (
+                      <BrowseIcon
+                        onClick={({ e }: { e: MouseEvent }) => {
+                          open();
+                          props.onPreview?.({ file, index, e });
+                        }}
+                      />
+                    )}
+                  ></ImageViewer>
+                  <span class={`${uploadPrefix.value}__card-mask-item-divider`}></span>
+                </span>
+              )}
+              {!disabled.value && (
+                <span
+                  class={`${uploadPrefix.value}__card-mask-item ${uploadPrefix.value}__delete`}
+                  onClick={(e: MouseEvent) => props.onRemove({ e, index, file })}
+                >
+                  <DeleteIcon />
+                </span>
+              )}
+            </div>
+          </div>
+          <p class={`${uploadPrefix.value}__card-name`}>{fileName}</p>
+        </li>
+      );
+    };
+
+    const renderStatus = (file: UploadFile) => {
+      const { iconMap, textMap } = getStatusMap();
+      return (
+        <div class={`${uploadPrefix.value}__flow-status`}>
+          {iconMap[file.status]}
+          <span class={`${uploadPrefix.value}__${props.theme}-${file.status}`}>
+            {textMap[file.status]}
+            {props.showUploadProgress && file.status === 'progress' ? ` ${file.percent || 0}%` : ''}
+          </span>
+        </div>
+      );
+    };
+
+    const renderNormalActionCol = (file: UploadFile, index: number) => (
+      <td>
+        <TButton
+          theme="primary"
+          variant="text"
+          content={locale.value?.triggerUploadText?.delete}
+          class={`${uploadPrefix.value}__delete`}
+          onClick={(e: MouseEvent) => props.onRemove({ e, index, file })}
+        ></TButton>
+      </td>
+    );
+
+    // batchUpload action col
+    const renderBatchActionCol = (index: number) =>
+      // 第一行数据才需要合并单元格
+      index === 0 ? (
+        <td rowSpan={displayFiles.value.length} class={`${uploadPrefix.value}__flow-table__batch-row`}>
+          <TButton
+            theme="primary"
+            variant="text"
+            content={locale.value?.triggerUploadText?.delete}
+            class={`${uploadPrefix.value}__delete`}
+            onClick={(e: MouseEvent) => props.onRemove({ e, index: -1, file: undefined })}
+          ></TButton>
+        </td>
+      ) : null;
+
+    const renderFileList = () => {
+      const customList = renderTNodeJSX('fileListDisplay', {
+        params: {
+          files: props.displayFiles,
+          dragEvents: innerDragEvents.value,
+        },
+      });
+      if (customList || props.fileListDisplay) return customList;
+      return (
+        <table class={`${uploadPrefix.value}__flow-table`} {...innerDragEvents.value}>
+          <thead>
+            <tr>
+              <th>{locale.value.file?.fileNameText}</th>
+              <th style={{ minWidth: '120px' }}>{locale.value.file?.fileSizeText}</th>
+              <th style={{ minWidth: '120px' }}>{locale.value.file?.fileStatusText}</th>
+              {disabled.value ? null : <th>{locale.value.file?.fileOperationText}</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {!displayFiles.value.length && (
+              <tr>
+                <td colSpan={4}>{renderEmpty()}</td>
+              </tr>
+            )}
+            {displayFiles.value.map((file, index) => {
+              // 合并操作出现条件为：当前为合并上传模式且列表内没有待上传文件
+              const showBatchUploadAction = props.isBatchUpload;
+              const deleteNode =
+                showBatchUploadAction && displayFiles.value.every((item) => item.status === 'success' || !item.status)
+                  ? renderBatchActionCol(index)
+                  : renderNormalActionCol(file, index);
+              const fileName = props.abridgeName?.length ? abridgeName(file.name, ...props.abridgeName) : file.name;
+              return (
+                <tr key={file.name + index + file.percent + file.status || '0'}>
+                  <td class={`${uploadPrefix.value}__file-name`}>
+                    {file.url ? (
+                      <Link href={file.url} target="_blank" hover="color">
+                        {fileName}
+                      </Link>
+                    ) : (
+                      fileName
+                    )}
+                  </td>
+                  <td>{returnFileSize(file.size)}</td>
+                  <td>{renderStatus(file)}</td>
+                  {disabled.value ? null : deleteNode}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      );
+    };
+
+    const renderImageList = () => {
+      const customList = renderTNodeJSX('fileListDisplay', {
+        params: {
+          files: props.displayFiles,
+          dragEvents: innerDragEvents.value,
+        },
+      });
+      if (customList || props.fileListDisplay) return customList;
+      return (
+        <ul class={`${uploadPrefix.value}__card clearfix`}>
+          {props.displayFiles.map((file, index) => renderImgItem(file, index))}
+        </ul>
+      );
+    };
+
+    return () => {
+      const cardClassName = `${uploadPrefix.value}__flow-card-area`;
+      return (
+        <div class={`${uploadPrefix.value}__flow ${uploadPrefix.value}__flow-${props.theme}`}>
+          <div class={`${uploadPrefix.value}__flow-op`}>
+            {slots.default?.()}
+            {props.placeholder && (
+              <small class={`${uploadPrefix.value}__flow-placeholder ${uploadPrefix.value}__placeholder`}>
+                {props.placeholder}
+              </small>
+            )}
+          </div>
+
+          {props.theme === 'image-flow' && (
+            <div class={cardClassName} {...innerDragEvents.value}>
+              {displayFiles.value.length ? renderImageList() : renderEmpty()}
+            </div>
+          )}
+
+          {props.theme === 'file-flow' &&
+            (displayFiles.value.length ? (
+              renderFileList()
+            ) : (
+              <div class={cardClassName} {...innerDragEvents.value}>
+                {renderEmpty()}
+              </div>
+            ))}
+
+          {!props.autoUpload && (
+            <div class={`${uploadPrefix.value}__flow-bottom`}>
+              <TButton
+                theme="default"
+                disabled={disabled.value || !uploading.value}
+                content={locale.value?.cancelUploadText}
+                class={`${uploadPrefix.value}__cancel`}
+                onClick={(e) => props.cancelUpload?.({ e })}
+              ></TButton>
+              <TButton
+                disabled={disabled.value || uploading.value || !displayFiles.value.length}
+                theme="primary"
+                loading={uploading.value}
+                class={`${uploadPrefix.value}__continue`}
+                content={uploadText.value}
+                onClick={() => props.uploadFiles?.()}
+              ></TButton>
+            </div>
+          )}
+        </div>
+      );
+    };
+  },
+});

@@ -1,0 +1,36 @@
+<template>
+  <t-space direction="vertical" size="large">
+    <t-space size="small" align="center">
+      <label>请选择风格：</label>
+      <t-select v-model="theme">
+        <t-option v-for="item in options" :key="item.value" :value="item.value" :label="item.label" />
+      </t-select>
+      <t-button theme="primary" @click="toCurrent()"> 今天（当前高亮日期） </t-button>
+    </t-space>
+    <div>
+      <label>日期补零：</label>
+      <t-switch v-model="fillWithZero" size="large" />
+    </div>
+    <t-calendar ref="myCalendar" :theme="theme" :is-show-weekend-default="true" :fill-with-zero="fillWithZero" />
+  </t-space>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+type Theme = 'full' | 'card';
+
+const options = [
+  { value: 'full', label: '全屏风格' },
+  { value: 'card', label: '卡片风格' },
+];
+
+const theme = ref<Theme>('card');
+const myCalendar = ref<{ toCurrent: () => void }>(null);
+const fillWithZero = ref(true);
+const toCurrent = () => {
+  if (myCalendar.value) {
+    myCalendar.value.toCurrent();
+  }
+};
+</script>
