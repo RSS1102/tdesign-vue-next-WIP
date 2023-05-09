@@ -11,7 +11,7 @@
   </t-space>
 </template>
 <script setup lang="ts">
-import { MessagePlugin } from 'tdesign-vue-next';
+import { DropdownOption, MessagePlugin } from 'tdesign-vue-next';
 
 const options = [
   { content: '操作一', value: 1 },
@@ -20,8 +20,8 @@ const options = [
   { content: '操作四', value: 4 },
 ];
 
-const clickHandler = (data) => {
+const clickHandler = (data: { dropdownItem: DropdownOption; context: { e: MouseEvent } }) => {
   console.log(data);
-  MessagePlugin.success(`选中【${data.content}】`);
+  MessagePlugin.success(`选中【${data.context}】`);
 };
 </script>
