@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { CalendarCell, ControllerOptions } from 'tdesign-vue-next';
+import { CalendarCell } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
 const preventCellContextmenu = ref(false);
