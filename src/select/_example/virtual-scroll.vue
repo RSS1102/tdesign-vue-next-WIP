@@ -22,10 +22,12 @@
   </t-space>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 
-const options = [];
+type Option = { label: string; value: string };
+
+const options: Option[] = [];
 for (let i = 0; i < 10000; i++) {
   options.push({ label: `选项${i + 1}`, value: String(i) });
 }

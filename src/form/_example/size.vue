@@ -46,6 +46,8 @@ import { Data, MessagePlugin, SubmitContext } from 'tdesign-vue-next';
 const formData = reactive({
   name: 'TDesign',
   tel: '12345678910',
+  status: true,
+  gender: '1',
   course: ['1'],
 });
 const size = ref('medium');

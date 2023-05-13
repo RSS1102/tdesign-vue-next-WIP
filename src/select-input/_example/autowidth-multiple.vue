@@ -27,16 +27,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { ChevronDownIcon } from 'tdesign-icons-vue-next';
-import {
-  CheckboxGroupChangeContext,
-  CheckboxGroupValue,
-  SelectInputChangeContext,
-  TagInputValue,
-} from 'tdesign-vue-next';
+import { CheckboxGroupChangeContext, CheckboxGroupValue, SelectInputChangeContext } from 'tdesign-vue-next';
 
-type OPTIONSType = { label: string; value?: number; checkAll?: boolean };
+type Option = { label: string; value?: number; checkAll?: boolean };
 
-const OPTIONS: OPTIONSType[] = [
+const OPTIONS: Option[] = [
   // 全选
   { label: 'all frameworks', checkAll: true },
   { label: 'tdesign-vue', value: 1 },
@@ -48,7 +43,7 @@ const OPTIONS: OPTIONSType[] = [
 ];
 
 const options = ref([...OPTIONS]);
-const value = ref<OPTIONSType[]>([
+const value = ref<Option[]>([
   { label: 'Vue', value: 1 },
   { label: 'React', value: 2 },
   { label: 'Miniprogram', value: 3 },
@@ -81,8 +76,8 @@ const onCheckedChange = (val: CheckboxGroupValue, { current, type }: CheckboxGro
 };
 
 // 可以根据触发来源，自由定制标签变化时的筛选器行为
-const onTagChange = (currentTags: TagInputValue, context: SelectInputChangeContext) => {
-  console.log(currentTags, context);
+const onTagChange = (currentTags: Option[], context: SelectInputChangeContext) => {
+  console.log('onTagChange', currentTags, context);
   const { trigger, index, item } = context;
   if (trigger === 'clear') {
     value.value = [];
@@ -92,8 +87,8 @@ const onTagChange = (currentTags: TagInputValue, context: SelectInputChangeConte
   }
   // 如果允许创建新条目
   if (trigger === 'enter') {
-    const current = { label: item, value: item };
-    console.log(current);
+    const current = { label: item, value: item } as Option;
+    console.log('current', current);
     value.value.push(current);
     options.value = options.value.concat(current);
   }

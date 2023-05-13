@@ -16,9 +16,7 @@
     <!-- 自定义折叠项内容，collapsedItems 为 插槽(slot) { value, count, collapsedSelectedItems }-->
     <t-select v-model="value" placeholder="请选择" multiple :min-collapsed-num="minCollapsedNum" :options="options">
       <!-- hover展示折叠部分的已选项 -->
-      <template
-        #collapsedItems="{ collapsedSelectedItems, count }: { collapsedSelectedItems: Options[], count: number }"
-      >
+      <template #collapsedItems="{ collapsedSelectedItems, count }">
         <t-popup>
           <template #content>
             <p v-for="(item, index) in collapsedSelectedItems" :key="index" style="padding: 8px">
@@ -32,17 +30,14 @@
   </t-space>
 </template>
 <script setup lang="tsx">
-import { VNode, ref } from 'vue';
+import { h, ref } from 'vue';
+type H = typeof h;
 
 type Options = {
   label: string;
   value: string;
 };
 
-type CollapsedItems = {
-  collapsedSelectedItems: Options[];
-  count: number;
-};
 const options = [
   {
     label: '选项一',
@@ -60,7 +55,7 @@ const options = [
 
 const value = ref(['1', '3']);
 const minCollapsedNum = 1;
-const collapsedItems = (h: VNode, { value, count }: { value: Options[]; count: number }) => {
+const collapsedItems = (h: H, { value, count }: { value: Options; count: number }) => {
   if (!(value instanceof Array) || !count) return;
   return (
     <t-popup

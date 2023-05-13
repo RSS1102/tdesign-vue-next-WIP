@@ -1,9 +1,9 @@
 <template>
-  <t-cascader v-model="value" :options="options" clearable :load="load" />
+  <Cascader v-model="value" :options="options" clearable :load="load" />
 </template>
 
 <script setup lang="ts">
-import { TreeNodeModel } from 'tdesign-vue-next';
+import { Cascader, TreeNodeModel } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
 type CascaderOption = {
@@ -12,7 +12,7 @@ type CascaderOption = {
   children: boolean;
 };
 
-const options = ref<CascaderOption[]>([
+const options = ref([
   {
     label: '选项1',
     value: '1',
@@ -27,8 +27,9 @@ const options = ref<CascaderOption[]>([
 
 const value = ref();
 
-const load = (node: TreeNodeModel<CascaderOption[]>) =>
-  new Promise((resolve) => {
+const load = (node: TreeNodeModel<CascaderOption[]>) => {
+  console.log(node);
+  return new Promise((resolve) => {
     setTimeout(() => {
       let nodes = [];
       if (node.level < 2) {
@@ -46,4 +47,5 @@ const load = (node: TreeNodeModel<CascaderOption[]>) =>
       resolve(nodes);
     }, 1000);
   });
+};
 </script>

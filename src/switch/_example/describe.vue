@@ -33,10 +33,10 @@
   </t-space>
 </template>
 <script setup lang="tsx">
-import { VNode, ref } from 'vue';
+import { h, ref } from 'vue';
+type H = typeof h;
 
 import { CloseIcon, CheckIcon } from 'tdesign-icons-vue-next';
-import { SwitchValue } from 'tdesign-vue-next';
 
 const checked = ref(true);
 const renderChecked = ref(true);
@@ -49,7 +49,7 @@ const renderActiveContent = () => {
 const renderInactiveContent = () => {
   return <CloseIcon />;
 };
-const renderContent = (_h: VNode, data: { value: boolean }) => {
+const renderContent = (_h: H, data: { value: boolean }) => {
   console.log(data);
   return data.value ? <CheckIcon /> : <CloseIcon />;
 };

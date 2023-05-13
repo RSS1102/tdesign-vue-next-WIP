@@ -34,12 +34,12 @@ const handleFixedChange = (_affixed: boolean, { top }: { top: number }) => {
 
 onMounted(() => {
   nextTick(() => {
-    window.addEventListener('scroll', affixRef.value!.handleScroll);
+    window.addEventListener('scroll', affixRef.value?.handleScroll);
   });
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', affixRef.value!.handleScroll);
+  window.removeEventListener('scroll', affixRef.value?.handleScroll);
 });
 </script>
 

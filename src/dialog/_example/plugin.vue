@@ -9,7 +9,7 @@
   <br />
 
   <t-space direction="vertical">
-    <p>函数调用控制弹窗:</p>
+    <p>函数调用方式二:</p>
     <t-space>
       <t-button theme="primary" @click="confirmDialog">confirm-dialog</t-button>
     </t-space>
@@ -17,7 +17,7 @@
   <br />
 
   <t-space direction="vertical">
-    <p>使用组件实例控制弹窗1:</p>
+    <p>函数调用方式三:</p>
     <t-space>
       <t-button theme="primary" @click="alertDialog">alert-dialog</t-button>
     </t-space>
@@ -26,6 +26,9 @@
 <script setup lang="ts">
 import { IconFont } from 'tdesign-icons-vue-next';
 import { Button, DialogInstance, DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
+import { h } from 'vue';
+
+type H = typeof h;
 
 // 函数调用方式一
 let instanceDialogPluginOne: DialogInstance;
@@ -50,7 +53,10 @@ const createInstanceDialogPlugin = () => {
         cancelBtn: {
           content: '销毁实例',
           theme: 'danger',
-          onClick: () => instanceDialogPluginOne.destroy(),
+          onClick: () => {
+            instanceDialogPluginOne.destroy();
+            instanceDialogPluginOne = null;
+          },
         },
       });
     },
@@ -72,8 +78,8 @@ const confirmDialog = () => {
   const instanceDialogPluginTwo = DialogPlugin.confirm({
     header: 'Confirm-DialogPlugin',
     body: '使用 DialogPlugin.confirm打开弹窗',
-    closeBtn: (h) => h(IconFont, { name: 'close-circle' }),
-    confirmBtn: (h) =>
+    closeBtn: (h: H) => h(IconFont, { name: 'close-circle' }),
+    confirmBtn: (h: H) =>
       h(Button, { content: '关闭弹窗', theme: 'warning', onClick: () => instanceDialogPluginTwo.hide() }),
     onConfirm: (context: { e: MouseEvent | KeyboardEvent }) => {
       console.log(context);
