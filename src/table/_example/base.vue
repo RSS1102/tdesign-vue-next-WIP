@@ -36,10 +36,11 @@
 </template>
 
 <script setup lang="tsx">
-import { VNode, ref } from 'vue';
+import { h, ref } from 'vue';
 import { ErrorCircleFilledIcon, CheckCircleFilledIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
 import { RowEventContext } from 'tdesign-vue-next';
 
+type H = typeof h;
 type DataType = {
   index: number;
   applicant: string;
@@ -89,7 +90,7 @@ const columns = ref([
   {
     colKey: 'status',
     title: '申请状态',
-    cell: (h: VNode, { row }: { row: DataType }) => {
+    cell: (h: H, { row }: { row: DataType }) => {
       return (
         <t-tag shape="round" theme={statusNameListMap[row.status].theme} variant="light-outline">
           {statusNameListMap[row.status].icon}

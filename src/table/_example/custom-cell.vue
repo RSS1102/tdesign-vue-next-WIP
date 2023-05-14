@@ -20,7 +20,7 @@
 </template>
 <script setup lang="tsx">
 import { ErrorCircleFilledIcon, CheckCircleFilledIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import { PrimaryTableCol, PrimaryTableRenderParams } from 'tdesign-vue-next';
 
 type DataType = {
   index: number;
@@ -71,13 +71,13 @@ const columns: Array<PrimaryTableCol<DataType>> = [
     colKey: 'matters',
     title: '申请事项',
     // 使用 cell 方法自定义单元格：
-    cell: (h, { col, row }: { col: PrimaryTableCol<DataType>; row: DataType }) => <div>{row[col.colKey]}</div>,
+    cell: (_h, { col, row }: { col: PrimaryTableCol<DataType>; row: DataType }) => <div>{row[col.colKey]}</div>,
   },
   {
     title: '邮箱地址',
     colKey: 'email',
     // render 即可渲染表头，也可以渲染单元格。但 cell 只能渲染单元格，title 只能渲染表头
-    render(h, context) {
+    render(_h, context: PrimaryTableRenderParams<DataType>) {
       const { type, row, col } = context;
       if (type === 'title') return '邮箱地址';
       return <div>{row[col.colKey]}</div>;

@@ -8,16 +8,11 @@
 </template>
 
 <script setup lang="tsx">
-import { VNode, ref } from 'vue';
+import { VNode, h, ref } from 'vue';
 import { ErrorCircleFilledIcon, CheckCircleFilledIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
 import { DragSortContext } from 'tdesign-vue-next';
 
-const statusNameListMap = {
-  0: { label: '审批通过', theme: 'success', icon: <CheckCircleFilledIcon /> },
-  1: { label: '审批失败', theme: 'danger', icon: <CloseCircleFilledIcon /> },
-  2: { label: '审批过期', theme: 'warning', icon: <ErrorCircleFilledIcon /> },
-};
-
+type H = typeof h;
 type DataType = {
   index: number;
   applicant: string;
@@ -27,6 +22,16 @@ type DataType = {
   matters: string;
   time: number;
   createTime: string;
+};
+
+type StatusNameListMap = {
+  [key: number]: { label: string; theme: 'default' | 'primary' | 'warning' | 'danger' | 'success'; icon: VNode };
+};
+
+const statusNameListMap: StatusNameListMap = {
+  0: { label: '审批通过', theme: 'success', icon: <CheckCircleFilledIcon /> },
+  1: { label: '审批失败', theme: 'danger', icon: <CloseCircleFilledIcon /> },
+  2: { label: '审批过期', theme: 'warning', icon: <ErrorCircleFilledIcon /> },
 };
 
 const data: DataType[] = [];
@@ -52,7 +57,7 @@ const initialColumns = [
     colKey: 'status',
     title: '申请状态',
     width: '150',
-    cell: (h: VNode, { row }: { row: DataType }) => {
+    cell: (h: H, { row }: { row: DataType }) => {
       return (
         <t-tag shape="round" theme={statusNameListMap[row.status].theme} variant="light-outline">
           {statusNameListMap[row.status].icon}

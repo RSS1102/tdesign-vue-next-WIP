@@ -16,8 +16,9 @@ import {
   CloseCircleFilledIcon,
 } from 'tdesign-icons-vue-next';
 import { PrimaryTableRenderParams } from 'tdesign-vue-next';
-import { VNode } from 'vue';
+import { h } from 'vue';
 
+type H = typeof h;
 type DataType = {
   index: number;
   applicant: string;
@@ -62,15 +63,13 @@ const columns = [
   },
   {
     colKey: 'matters',
-    title: (h: VNode, { colIndex }: { colIndex: number }) => (
-      <b style="font-wight: bold">{['', '申请事项'][colIndex]}</b>
-    ),
+    title: (h: H, { colIndex }: { colIndex: number }) => <b style="font-wight: bold">{['', '申请事项'][colIndex]}</b>,
   },
   {
     title: '审批状态',
     colKey: 'status',
     // 使用 cell 方法自定义单元格：
-    cell: (h: VNode, { row }: { row: DataType }) => {
+    cell: (h: H, { row }: { row: DataType }) => {
       return (
         <t-tag shape="round" theme={statusNameListMap[row.status].theme} variant="light-outline">
           {statusNameListMap[row.status].icon}
@@ -83,7 +82,7 @@ const columns = [
   {
     colKey: 'createTime',
     // render 可以渲染表头，也可以渲染单元格。但 title 只能渲染表头，cell 只能渲染单元格
-    render(h: VNode, context: PrimaryTableRenderParams<DataType>) {
+    render(h: H, context: PrimaryTableRenderParams<DataType>) {
       const { type, row, col } = context;
       return {
         title: '申请时间',

@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="tsx">
-import { watch, ref, VNode } from 'vue';
+import { watch, ref, h } from 'vue';
 import {
   CheckCircleFilledIcon,
   CaretDownSmallIcon,
@@ -34,6 +34,7 @@ import {
 } from 'tdesign-icons-vue-next';
 import { SortOptions, TableSort } from 'tdesign-vue-next';
 
+type H = typeof h;
 type DataType = {
   index: number;
   applicant: string;
@@ -77,7 +78,7 @@ const columns = ref([
     width: '150',
     sortType: 'all',
     sorter: (a: { status: number }, b: { status: number }) => a.status - b.status,
-    cell: (h: VNode, { row }: { row: DataType }) => {
+    cell: (h: H, { row }: { row: DataType }) => {
       return (
         <t-tag shape="round" theme={statusNameListMap[row.status].theme} variant="light-outline">
           {statusNameListMap[row.status].icon}
@@ -116,7 +117,7 @@ const multipleSorts = ref([
 const allowMultipleSort = ref(false);
 const globalLocale = ref({
   table: {
-    sortIcon: (h: VNode) => h && <CaretDownSmallIcon size="16px" />,
+    sortIcon: (h: H) => h && <CaretDownSmallIcon size="16px" />,
   },
 });
 

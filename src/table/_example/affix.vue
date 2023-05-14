@@ -35,10 +35,11 @@
   </div>
 </template>
 <script setup lang="tsx">
-import { ref, watch, h, VNode } from 'vue';
+import { ref, watch, h } from 'vue';
 import { ErrorCircleFilledIcon, CheckCircleFilledIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
 import { DragSortContext } from 'tdesign-vue-next';
 
+type H = typeof h;
 type DataType = {
   index: number;
   applicant: string;
@@ -80,7 +81,7 @@ function getData(count: number) {
 const TOTAL = 38;
 
 function getColumns(
-  h: any,
+  h: H,
   { fixedLeftColumn, fixedRightColumn }: { fixedLeftColumn: boolean; fixedRightColumn: boolean },
 ) {
   return [
@@ -96,7 +97,7 @@ function getColumns(
       colKey: 'status',
       title: '申请状态',
       width: '150',
-      cell: (h: VNode, { row }: { row: DataType }) => {
+      cell: (h: H, { row }: { row: DataType }) => {
         return (
           <t-tag shape="round" theme={statusNameListMap[row.status].theme} variant="light-outline">
             {statusNameListMap[row.status].icon}
@@ -112,7 +113,7 @@ function getColumns(
     {
       colKey: 'operation',
       title: '操作',
-      cell: (h: VNode, { row }: { row: DataType }) => (
+      cell: (h: H, { row }: { row: DataType }) => (
         <t-link hover="color" theme="primary">
           {row.status === 0 ? '查看详情' : '再次申请'}
         </t-link>

@@ -5,8 +5,8 @@
   </div>
 </template>
 
-<script lang="jsx" setup>
-import { ref } from 'vue';
+<script lang="tsx" setup>
+import { VNode, ref } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import {
   FileCopyIcon,
@@ -15,7 +15,11 @@ import {
   CloseCircleFilledIcon,
 } from 'tdesign-icons-vue-next';
 
-const statusNameListMap = {
+type StatusNameListMap = {
+  [key: number]: { label: string; theme: 'default' | 'primary' | 'warning' | 'danger' | 'success'; icon: VNode };
+};
+
+const statusNameListMap: StatusNameListMap = {
   0: { label: '审批通过', theme: 'success', icon: <CheckCircleFilledIcon /> },
   1: { label: '审批失败', theme: 'danger', icon: <CloseCircleFilledIcon /> },
   2: { label: '审批过期', theme: 'warning', icon: <ErrorCircleFilledIcon /> },

@@ -18,9 +18,10 @@
 </template>
 
 <script setup lang="tsx">
-import { ref, computed, VNode } from 'vue';
+import { ref, computed, h } from 'vue';
 import { ErrorCircleFilledIcon, CheckCircleFilledIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next';
 
+type H = typeof h;
 type DataType = {
   index: number;
   applicant: string;
@@ -63,7 +64,7 @@ const columns = [
     colKey: 'status',
     title: '申请状态',
     width: '150',
-    cell: (h: VNode, { row }: { row: DataType }) => {
+    cell: (h: H, { row }: { row: DataType }) => {
       return (
         <t-tag shape="round" theme={statusNameListMap[row.status].theme} variant="light-outline">
           {statusNameListMap[row.status].icon}
@@ -80,7 +81,7 @@ const columns = [
 const asyncLoading = ref('loading');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const customLoadingNode = (h: any) => <div class="t-table--loading-async">这是自定义加载状态和内容</div>;
+const customLoadingNode = (h: H) => <div class="t-table--loading-async">这是自定义加载状态和内容</div>;
 
 const loadingNode = computed(() => (asyncLoading.value === 'loading-custom' ? customLoadingNode : asyncLoading.value));
 
