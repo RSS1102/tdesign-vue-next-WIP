@@ -34,27 +34,27 @@ const options: Option[] = [
 
 const value = ref('');
 
-const loadFunc = (node: TreeNodeModel<Option[]>) =>
-  new Promise((resolve) => {
-    let timer = setTimeout(() => {
-      let nodes = [];
-      if (node.level < 2) {
-        nodes = [
-          {
-            label: `${node.label}.1`,
-            value: `${node.value}.1`,
-            children: true,
-          },
-          {
-            label: `${node.label}.2`,
-            value: `${node.value}.2`,
-            children: true,
-          },
-        ];
-      }
-      resolve(nodes);
-      clearTimeout(timer);
-      timer = null;
-    }, 1000);
-  });
+// const loadFunc = (node: TreeNodeModel<Option[]>) =>
+//   new Promise((resolve) => {
+//     let timer = setTimeout(() => {
+//       let nodes = [];
+//       if (node.level < 2) {
+//         nodes = [
+//           {
+//             label: `${node.label}.1`,
+//             value: `${node.value}.1`,
+//             children: true,
+//           },
+//           {
+//             label: `${node.label}.2`,
+//             value: `${node.value}.2`,
+//             children: true,
+//           },
+//         ];
+//       }
+//       resolve(nodes);
+//       clearTimeout(timer);
+//       timer = null;
+//     }, 1000);
+//   });
 </script>

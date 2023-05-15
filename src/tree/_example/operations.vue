@@ -53,7 +53,7 @@
         </t-button>
       </template>
     </t-tree>
-    <h3 class="title">API:</h3>
+    <h3 class="title">Tree API:</h3>
     <div class="operations">
       <t-button theme="primary" @click="getItem"> 获取 value 为 'node1' 的单个节点 </t-button>
       <t-button theme="primary" @click="getAllItems"> 获取所有节点 </t-button>
@@ -73,9 +73,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { TreeNodeModel } from 'tdesign-vue-next';
+import { h, ref } from 'vue';
 
-const items = [
+type H = typeof h;
+type Item = {
+  value: string;
+  label?: string;
+};
+
+const items: Item[] = [
   {
     value: 'node1',
   },
@@ -84,7 +91,7 @@ const items = [
   },
 ];
 
-const getLabelContent = (node) => {
+const getLabelContent = (node: TreeNodeModel<Item>) => {
   const pathNodes = node.getPath();
   let label = pathNodes.map((itemNode) => itemNode.getIndex() + 1).join('.');
   label = `${label} | value: ${node.value}`;
@@ -102,19 +109,18 @@ const filterText = ref('');
 const filterByText = ref(null);
 const disableLabel = ref(false);
 
-const renderOperations = (createElement, node) => `value: ${node.value}`;
+const renderOperations = (h: H, node: TreeNodeModel<Item[]>) => `value: ${node.value}`;
 
-const getLabel = (createElement, node) => {
+const getLabel = (h: H, node: TreeNodeModel<Item>) => {
+  console.log('getLabel', node);
   const label = getLabelContent(node);
+  console.log('getLabel -label', label);
   const { data } = node;
   data.label = label;
   return label;
 };
 
-const getActivedNode = () => {
-  const activeNode = tree.value.getItem(activeId.value);
-  return activeNode;
-};
+const getActivedNode = () => tree.value.getItem(activeId.value);
 
 const tree = ref(null);
 const setLabel = (value) => {

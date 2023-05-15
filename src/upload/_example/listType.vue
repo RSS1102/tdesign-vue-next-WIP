@@ -23,14 +23,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { UploadIcon } from 'tdesign-icons-vue-next';
+import { UploadFile } from 'tdesign-vue-next';
 
 const files = ref([]);
 
-const handleChange = (files) => {
+const handleChange = (files: UploadFile) => {
+  console.log(files);
   console.log(files);
 };
 
-const handlePreview = (file) => {
+const handlePreview = (file: UploadFile) => {
   console.log(file);
   window.open(file.thumbUrl);
 };

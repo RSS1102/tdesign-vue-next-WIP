@@ -54,6 +54,7 @@ const value = ref('shenzhen');
 const type = ref('default');
 
 const filterFunction = (searchText: string, node: DataOption) => {
+  console.log(searchText, node);
   return node.data.label.indexOf(searchText) >= 0;
 };
 </script>

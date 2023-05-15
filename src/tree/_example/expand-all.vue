@@ -15,7 +15,24 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const data1 = [
+type Data1 = {
+  label: string;
+  children: {
+    label: string;
+    children?: {
+      label: string;
+    }[];
+  }[];
+};
+
+type Data2 = {
+  label: string;
+  children?: {
+    label: string;
+  }[];
+};
+
+const data1: Data1[] = [
   {
     label: '1',
     children: [
@@ -56,7 +73,7 @@ const data1 = [
   },
 ];
 
-const data2 = [
+const data2: Data2[] = [
   {
     label: '1',
   },
@@ -76,7 +93,7 @@ const data2 = [
   },
 ];
 
-const items = ref(data1);
+const items = ref<Data1[] | Data2[]>(data1);
 const transition = ref(true);
 
 const toggleData = () => {

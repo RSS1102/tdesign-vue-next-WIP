@@ -25,7 +25,7 @@ const uploadRef = ref();
 const uploadMethod = ref('requestSuccessMethod');
 
 // file 为等待上传的文件信息，用于提供给上传接口。file.raw 表示原始文件
-const requestSuccessMethod = (file: UploadFile | UploadFile[]) => {
+const requestSuccessMethod = (file: UploadFile) => {
   return new Promise((resolve) => {
     // file.percent 用于控制上传进度，如果不希望显示上传进度，则不对 file.percent 设置值即可。
     // 如果代码规范不能设置 file.percent，也可以设置 files

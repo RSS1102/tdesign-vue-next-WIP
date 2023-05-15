@@ -30,10 +30,30 @@
   />
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { TreeNodeModel } from 'tdesign-vue-next';
 import { ref, computed } from 'vue';
 
-const items = [
+type Items = {
+  value: string;
+  label: string;
+  checkable?: boolean;
+  children: {
+    value: string;
+    label: string;
+    checkable?: boolean;
+    children?: {
+      value: string;
+      label: string;
+      children: {
+        value: string;
+        label: string;
+      }[];
+    }[];
+  }[];
+};
+
+const items: Items[] = [
   {
     value: '1',
     label: '1',
@@ -132,7 +152,7 @@ const expanded = ref(['1', '1.1', '1.1.1', '2']);
 const actived = ref(['2']);
 
 const allChecked = computed(() => {
-  let arr = [];
+  let arr: string[] = [];
   if (Array.isArray(checked.value)) {
     arr = checked.value;
   }
@@ -140,7 +160,7 @@ const allChecked = computed(() => {
 });
 
 const allExpanded = computed(() => {
-  let arr = [];
+  let arr: string[] = [];
   if (Array.isArray(expanded.value)) {
     arr = expanded.value;
   }
@@ -148,20 +168,23 @@ const allExpanded = computed(() => {
 });
 
 const allActived = computed(() => {
-  let arr = [];
+  let arr: string[] = [];
   if (Array.isArray(actived.value)) {
     arr = actived.value;
   }
   return arr.join(', ');
 });
 
-const handleClick = (context) => {
+const handleClick = (context: { node: TreeNodeModel<Items>; e: MouseEvent }) => {
   console.info('onClick:', context);
 };
 
-const handleChange = (vals, context) => {
-  console.info('onChange:', vals, context);
-  const checked = vals.filter((val) => val !== '2.1');
+const handleChange = (values: Items[], context: { node: TreeNodeModel<T> }) => {
+  console.info('onChange:', values, context);
+  const checked = values.filter((val) => {
+    console.log(val);
+    // val !== '2.1'
+  });
   console.info('节点 2.1 不允许选中');
   checked.value = checked;
 };
