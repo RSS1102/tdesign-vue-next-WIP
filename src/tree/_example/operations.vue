@@ -120,11 +120,11 @@ const getLabel = (h: H, node: TreeNodeModel<Item>) => {
   return label;
 };
 
-const getActivedNode = () => tree.value.getItem(activeId.value);
+const getActivedNode = (): TreeNodeModel<Item> => tree.value.getItem(activeId.value);
 
 const tree = ref(null);
-const setLabel = (value) => {
-  const node = tree.value.getItem(value);
+const setLabel = (value: string | number) => {
+  const node: TreeNodeModel<Item> = tree.value.getItem(value);
   const label = getLabelContent(node);
   const { data } = node;
   data.label = label;
@@ -139,7 +139,7 @@ const getAllItems = () => {
   const nodes = tree.value.getItems();
   console.info(
     'getAllItems:',
-    nodes.map((node) => node.value),
+    nodes.map((node: Item) => node.value),
   );
 };
 
@@ -150,9 +150,9 @@ const getAllActived = () => {
 const getActiveChildren = () => {
   const node = getActivedNode();
   if (!node) return;
-  let nodes = [];
+  let nodes: TreeNodeModel<Item>[] = [];
   if (node) {
-    nodes = node.getChildren(true) || [];
+    nodes = (node.getChildren(true) as TreeNodeModel<Item>[]) || [];
   }
   console.info(
     'getActiveChildren:',
@@ -166,7 +166,7 @@ const getActiveChecked = () => {
   const nodes = tree.value.getItems(node.value);
   console.info(
     'getChecked:',
-    nodes.filter((node) => node.checked).map((node) => node.value),
+    nodes.filter((node: TreeNodeModel<Item>) => node.checked).map((node: Item) => node.value),
   );
 };
 
@@ -184,10 +184,10 @@ const getInsertItem = () => {
   return item;
 };
 
-const getPlainData = (item) => {
+const getPlainData = (item: TreeNodeModel<Item>) => {
   const root = item;
   if (!root) return null;
-  const children = item.getChildren(true) || [];
+  const children = (item.getChildren(true) as TreeNodeModel<Item>[]) || [];
   const list = [root].concat(children);
   const nodeMap = {};
   const nodeList = list.map((item) => {
@@ -217,7 +217,7 @@ const getPlainData = (item) => {
   return data;
 };
 
-const append = (node) => {
+const append = (node: TreeNodeModel<Item>) => {
   const item = getInsertItem();
   if (item) {
     if (!node) {
