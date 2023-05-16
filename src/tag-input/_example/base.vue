@@ -9,17 +9,17 @@
 </template>
 
 <script setup lang="ts">
-import { InputValue, TagInputChangeContext, TagInputValue } from 'tdesign-vue-next';
+import { InputValue, TagInputChangeContext } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
-const tags1 = ref(['Vue', 'React']);
-const tags2 = ref(['Vue', 'React']);
-const tags3 = ref(['Vue', 'React']);
+const tags1 = ref<string[]>(['Vue', 'React']);
+const tags2 = ref<string[]>(['Vue', 'React']);
+const tags3 = ref<string[]>(['Vue', 'React']);
 
-const onTagInputEnter = (value: TagInputValue, context: { e: KeyboardEvent; inputValue: InputValue }) => {
+const onTagInputEnter = (value: string[], context: { e: KeyboardEvent; inputValue: InputValue }) => {
   console.log(value, context);
 };
-const onChange = (value: TagInputValue, context: TagInputChangeContext) => {
+const onChange = (value: string[], context: TagInputChangeContext) => {
   console.log(value, context);
   tags2.value = value;
 };

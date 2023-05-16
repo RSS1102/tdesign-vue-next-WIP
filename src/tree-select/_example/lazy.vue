@@ -10,7 +10,6 @@
   />
 </template>
 <script setup lang="ts">
-import { TreeNodeModel } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
 type Option = {

@@ -25,21 +25,21 @@
 </template>
 
 <script setup lang="ts">
-import { TagInputValue, InputValue, TagInputChangeContext } from 'tdesign-vue-next';
+import { InputValue, TagInputChangeContext } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
 const tags1 = ref(['Vue', 'React', 'Angular']);
 const tags2 = ref(['Vue', 'React', 'Angular', 'Miniprogram']);
 
-const onTagInputEnter = (value: TagInputValue, context: { e: KeyboardEvent; inputValue: InputValue }) => {
+const onTagInputEnter = (value: string[], context: { e: KeyboardEvent; inputValue: InputValue }) => {
   console.log(value, context);
 };
 
-const onChange = (value: TagInputValue, context: TagInputChangeContext) => {
+const onChange = (value: string[], context: TagInputChangeContext) => {
   console.log(value, context);
 };
 
-const onChange2 = (value: TagInputValue, context: TagInputChangeContext) => {
+const onChange2 = (value: string[], context: TagInputChangeContext) => {
   console.log(value, context);
 };
 

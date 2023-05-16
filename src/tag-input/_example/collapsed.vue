@@ -23,13 +23,13 @@
 
 <script lang="tsx">
 import { defineComponent, ref } from 'vue';
-import { Tag, TagInputValue } from 'tdesign-vue-next';
+import { Tag } from 'tdesign-vue-next';
 
 export default defineComponent({
   name: 'TTagInputCollapsed',
   setup() {
     const tags = ref(['Vue', 'React', 'Miniprogram', 'Angular', 'Flutter']);
-    const renderCollapsedItems = ({ collapsedTags }: { collapsedTags: TagInputValue }) => (
+    const renderCollapsedItems = ({ collapsedTags }: { collapsedTags: string[] }) => (
       <Tag>更多({collapsedTags.length})</Tag>
     );
     return { tags, renderCollapsedItems };

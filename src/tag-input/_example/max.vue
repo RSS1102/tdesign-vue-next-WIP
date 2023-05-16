@@ -4,10 +4,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { MessagePlugin, TagInputValue, InputValue } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 
 const tags = ref([]);
-const onEnter = (value: TagInputValue, { inputValue }: { inputValue: InputValue }) => {
+const onEnter = (value: string[], { inputValue }: { inputValue: string }) => {
   if (value.length >= 3 && inputValue) {
     MessagePlugin.warning('最多只能输入 3 个标签!');
   }

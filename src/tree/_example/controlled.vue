@@ -34,7 +34,7 @@
 import { TreeNodeModel } from 'tdesign-vue-next';
 import { ref, computed } from 'vue';
 
-type Items = {
+type Item = {
   value: string;
   label: string;
   checkable?: boolean;
@@ -53,7 +53,7 @@ type Items = {
   }[];
 };
 
-const items: Items[] = [
+const items: Item[] = [
   {
     value: '1',
     label: '1',
@@ -175,32 +175,38 @@ const allActived = computed(() => {
   return arr.join(', ');
 });
 
-const handleClick = (context: { node: TreeNodeModel<Items>; e: MouseEvent }) => {
+const handleClick = (context: { node: TreeNodeModel<Item>; e: MouseEvent }) => {
   console.info('onClick:', context);
 };
 
-const handleChange = (values: Items[], context: { node: TreeNodeModel<T> }) => {
+const handleChange = (values: Item[], context: { node: TreeNodeModel<Item> }) => {
   console.info('onChange:', values, context);
-  const checked = values.filter((val) => {
+  const checkedArr = values.filter((val) => {
     console.log(val);
-    // val !== '2.1'
+    val.value !== '2.1';
   });
   console.info('节点 2.1 不允许选中');
-  checked.value = checked;
+  checked.value = checkedArr;
 };
 
-const handleExpand = (vals, context) => {
+const handleExpand = (
+  vals: Item[],
+  context: { node: TreeNodeModel<Item>; e?: MouseEvent; trigger: 'node-click' | 'icon-click' | 'setItem' },
+) => {
   console.info('onExpand:', vals, context);
-  const expanded = vals.filter((val) => val !== '2');
+  const expandedArr = vals.filter((val) => val.value !== '2');
   console.info('节点 2 不允许展开');
-  expanded.value = expanded;
+  expanded.value = expandedArr;
 };
 
-const handleActive = (vals, context) => {
+const handleActive = (
+  vals: Item[],
+  context: { node: TreeNodeModel<Item[]>; e?: MouseEvent; trigger: 'node-click' | 'setItem' },
+) => {
   console.info('onActive:', vals, context);
-  const actived = vals.filter((val) => val !== '2');
+  const activedArr = vals.filter((val) => val.value !== '2');
   console.info('节点 2 不允许激活');
-  actived.value = actived;
+  actived.value = activedArr;
 };
 
 const valueMode = 'onlyLeaf';
